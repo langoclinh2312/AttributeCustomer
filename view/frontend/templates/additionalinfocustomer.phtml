@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * Customer additional info for register and login forms
+ *
+ */
+?>
+<?php if ($this->helper(\Magento\Checkout\Helper\Data::class)->isContextCheckout()) : ?>
+    <input name="context" type="hidden" value="checkout" />
+<?php endif; ?>
+<div class="field required">
+    <label for="phone_number" class="label"><span><?= $block->escapeHtml(__('Phone')) ?></span></label>
+    <div class="control">
+        <input type="text" name="contact_phone" autocomplete="contact_phone" id="phone_number" value="<?= $block->escapeHtmlAttr($block->getFormData()->getPhone()) ?>" title="<?= $block->escapeHtmlAttr(__('Phone')) ?>" class="input-text" data-mage-init='{"mage/trim-input":{}}' data-validate="{required:true, 'validate-phone':true}">
+    </div>
+</div>
+<div class="field company_type">
+    <label for="company_type" class="label"><span><?= $block->escapeHtml(__('Company Type')) ?></span></label>
+    <div class="control">
+        <select id="company_type" name="company_type" title="<?= $block->escapeHtmlAttr(__('Company Type')) ?>" class="select" data-mage-init='{"mage/trim-input":{}}' data-validate="{required:true}">
+            <option value=""><?= $block->escapeHtml(__('--Please Select Status--')) ?></option>
+            <option value="CBD_M"><?= $block->escapeHtml(__('CBD Manufacturer')) ?></option>
+            <option value="CBD_BM"><?= $block->escapeHtml(__('CBD Brand and Marketing company')) ?></option>
+            <option value="CBD_E"><?= $block->escapeHtml(__('CBD Extractor')) ?></option>
+            <option value="Other"><?= $block->escapeHtml(__('Other')) ?></option>
+        </select>
+    </div>
+</div>
+<div class="field required organizatio-field" id="organizatio_field">
+    <label for="organizatio_name" class="label"><span><?= $block->escapeHtml(__('Organization Name')) ?></span></label>
+    <div class="control">
+        <input type="text" name="organizatio_name" id="organizatio_name" value="<?= $block->escapeHtmlAttr($block->getFormData()->getPhone()) ?>" title="<?= $block->escapeHtmlAttr(__('Organization Name')) ?>" class="input-text required-entry" aria-required="true">
+    </div>
+</div>
+<script>
+    require([
+        'jquery'
+    ], function($) {
+        $('#company_type').change(function() {
+            // get value after selected
+            var selectval = $(':selected').val();
+            if (selectval == 'Other') {
+                $('#organizatio_field').removeClass("organizatio-field");
+            } else {
+                $('#organizatio_field').addClass("organizatio-field");
+            }
+        });
+    });
+</script>
