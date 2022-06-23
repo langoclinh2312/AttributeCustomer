@@ -49,23 +49,18 @@ class AddOrganizationNameCustomerAttribute implements DataPatchInterface
         $this->eavConfig = $eavConfig;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function apply()
     {
         $customerSetup = $this->customerSetupFactory->create(['setup' => $this->setup]);
-        $customerEntity = $customerSetup->getEavConfig()->getEntityType(\Magento\Customer\Model\Customer::ENTITY);
+        $customerEntity = $customerSetup->getEavConfig()->getEntityType(Customer::ENTITY);
         $attributeSetId = $customerSetup->getDefaultAttributeSetId($customerEntity->getEntityTypeId());
         $attributeGroup = $customerSetup->getDefaultAttributeGroupId($customerEntity->getEntityTypeId(), $attributeSetId);
-        $customerSetup->addAttribute(\Magento\Customer\Model\Customer::ENTITY, 'organization_name', [
+        $customerSetup->addAttribute(Customer::ENTITY, 'organization_name', [
             'type' => 'varchar',
-            'label' => 'Organization Name',
             'input' => 'text',
+            'label' => 'Organization Name',
             'required' => false,
             'default' => null,
-            'user_defined' => true,
-            'unique' => false,
             'visible' => true,
             'user_defined' => true,
             'system' => false,
@@ -74,7 +69,7 @@ class AddOrganizationNameCustomerAttribute implements DataPatchInterface
             'is_filterable_in_grid' => true,
             'is_searchable_in_grid' => true
         ]);
-        $newAttribute = $this->eavConfig->getAttribute(\Magento\Customer\Model\Customer::ENTITY, 'organization_name');
+        $newAttribute = $this->eavConfig->getAttribute(Customer::ENTITY, 'organization_name');
         $newAttribute->addData([
             'used_in_forms' => ['adminhtml_customer', 'customer_account_edit', 'customer_account_create'],
             'attribute_set_id' => $attributeSetId,

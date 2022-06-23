@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var AHT\AttributeCustomer\Block\Form\AddAttributeEditEdit $block */
+
+$country_codes = $block->getCountryCollection();
+?>
+<?php if ($this->helper(\Magento\Checkout\Helper\Data::class)->isContextCheckout()) : ?>
+    <input name="context" type="hidden" value="checkout" />
+<?php endif; ?>
+<div class="fieldset info">
+    <div class="field required">
+        <label for="phone_number" class="label"><span><?= $block->escapeHtml(__('Phone Contact')) ?></span></label>
+        <div class="control phone_number">
+            <select class="country">
+                <?php foreach ($country_codes->getData() as $country_code) : ?>
+                    <option value="<?= $country_code['dial_code'] ?>" class="country_item" data-thumbnail="https://countryflagsapi.com/png/<?= $country_code['country_id'] ?>"><?= $country_code['dial_code'] ?></option>
+                <?php endforeach; ?>
+            </select>
+            <div class="country_code">
+                <button class="btn-select" type="button" value=""></button>
+                <div class="country_flag">
+                    <ul id="country_flag_nav" class="country_flag_nav"></ul>
+                </div>
+            </div>
+            <input type="number" autocomplete="input_phone" value="<?= !empty($block->getPhoneCountryCodes(false)) ? $block->getPhoneCountryCodes(false) : '' ?>" id="phone_number" class="input-text input_phone" data-mage-init='{"mage/trim-input":{}}' data-validate="{required:true, 'validate-phone':true}">
+            <input type="text" name="contact_phone" class="contact_phone" id="contact_phone">
+        </div>
+    </div>
+    <div class="field company_type">
+        <label for="company_type" class="label"><span><?= $block->escapeHtml(__('Company Type')) ?></span></label>
+        <div class="control">
+            <select id="company_type" name="company_type" title="<?= $block->escapeHtmlAttr(__('Company Type')) ?>" class="select" data-mage-init='{"mage/trim-input":{}}' data-validate="{required:true}">
+                <option value="CBD_M" <?= ($block->getCustomer()->getCustomAttribute('company_type')->getValue() == 'CBD_M') ? 'selected' : ''; ?>><?= $block->escapeHtml(__('CBD Manufacturer')) ?></option>
+                <option value="CBD_BM" <?= ($block->getCustomer()->getCustomAttribute('company_type')->getValue() == 'CBD_BM') ? 'selected' : ''; ?>><?= $block->escapeHtml(__('CBD Brand and Marketing company')) ?></option>
+                <option value="CBD_E" <?= ($block->getCustomer()->getCustomAttribute('company_type')->getValue() == 'CBD_E') ? 'selected' : ''; ?>><?= $block->escapeHtml(__('CBD Extractor')) ?></option>
+                <option value="Other" <?= ($block->getCustomer()->getCustomAttribute('company_type')->getValue() == 'Other') ? 'selected' : ''; ?>><?= $block->escapeHtml(__('Other')) ?></option>
+            </select>
+        </div>
+    </div>
+    <div class="field required" id="organizatio_field">
+        <label for="organizatio_name" class="label"><span><?= $block->escapeHtml(__('Organization Name')) ?></span></label>
+        <div class="control">
+            <input type="text" name="organization_name" id="organizatio_name" value="<?= ($block->getCustomer()->getCustomAttribute('company_type')->getValue() == 'Other') ? $block->getCustomer()->getCustomAttribute('organization_name')->getValue() : '' ?>" title="<?= $block->escapeHtmlAttr(__('Organization Name')) ?>" class="input-text required-entry" aria-required="true">
+        </div>
+    </div>
+</div>

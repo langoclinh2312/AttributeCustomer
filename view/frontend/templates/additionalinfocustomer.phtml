@@ -1,24 +1,40 @@
 <?php
 
 /**
- * Customer additional info for register and login forms
- *
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
  */
+
+/** @var AHT\AttributeCustomer\Block\Form\AddAttributeRegister $block */
+
+$country_codes = $block->getCountryCollection();
 ?>
 <?php if ($this->helper(\Magento\Checkout\Helper\Data::class)->isContextCheckout()) : ?>
     <input name="context" type="hidden" value="checkout" />
 <?php endif; ?>
 <div class="field required">
-    <label for="phone_number" class="label"><span><?= $block->escapeHtml(__('Phone')) ?></span></label>
-    <div class="control">
-        <input type="text" name="contact_phone" autocomplete="contact_phone" id="phone_number" value="<?= $block->escapeHtmlAttr($block->getFormData()->getPhone()) ?>" title="<?= $block->escapeHtmlAttr(__('Phone')) ?>" class="input-text" data-mage-init='{"mage/trim-input":{}}' data-validate="{required:true, 'validate-phone':true}">
+    <label for="phone_number" class="label"><span><?= $block->escapeHtml(__('Phone Contact')) ?></span></label>
+    <div class="control phone_number">
+        <select class="country">
+            <?php foreach ($country_codes->getData() as $country_code) : ?>
+                <option value="<?= $country_code['dial_code'] ?>" class="country_item" data-thumbnail="https://countryflagsapi.com/png/<?= $country_code['country_id'] ?>"><?= $country_code['dial_code'] ?></option>
+            <?php endforeach; ?>
+        </select>
+        <div class="country_code">
+            <button class="btn-select" type="button" value=""></button>
+            <div class="country_flag">
+                <ul id="country_flag_nav" class="country_flag_nav"></ul>
+            </div>
+        </div>
+        <input type="number" autocomplete="input_phone" id="phone_number" class="input-text input_phone" data-mage-init='{"mage/trim-input":{}}' data-validate="{required:true, 'validate-phone':true}">
+        <input type="text" name="contact_phone" class="contact_phone" id="contact_phone">
     </div>
 </div>
 <div class="field company_type">
     <label for="company_type" class="label"><span><?= $block->escapeHtml(__('Company Type')) ?></span></label>
     <div class="control">
         <select id="company_type" name="company_type" title="<?= $block->escapeHtmlAttr(__('Company Type')) ?>" class="select" data-mage-init='{"mage/trim-input":{}}' data-validate="{required:true}">
-            <option value=""><?= $block->escapeHtml(__('--Please Select Status--')) ?></option>
+            <option value="" selected disabled><?= $block->escapeHtml(__('--Please Select Status--')) ?></option>
             <option value="CBD_M"><?= $block->escapeHtml(__('CBD Manufacturer')) ?></option>
             <option value="CBD_BM"><?= $block->escapeHtml(__('CBD Brand and Marketing company')) ?></option>
             <option value="CBD_E"><?= $block->escapeHtml(__('CBD Extractor')) ?></option>
@@ -29,21 +45,6 @@
 <div class="field required organizatio-field" id="organizatio_field">
     <label for="organizatio_name" class="label"><span><?= $block->escapeHtml(__('Organization Name')) ?></span></label>
     <div class="control">
-        <input type="text" name="organizatio_name" id="organizatio_name" value="<?= $block->escapeHtmlAttr($block->getFormData()->getPhone()) ?>" title="<?= $block->escapeHtmlAttr(__('Organization Name')) ?>" class="input-text required-entry" aria-required="true">
+        <input type="text" name="organization_name" id="organizatio_name" title="<?= $block->escapeHtmlAttr(__('Organization Name')) ?>" class="input-text required-entry" aria-required="true">
     </div>
 </div>
-<script>
-    require([
-        'jquery'
-    ], function($) {
-        $('#company_type').change(function() {
-            // get value after selected
-            var selectval = $(':selected').val();
-            if (selectval == 'Other') {
-                $('#organizatio_field').removeClass("organizatio-field");
-            } else {
-                $('#organizatio_field').addClass("organizatio-field");
-            }
-        });
-    });
-</script>
