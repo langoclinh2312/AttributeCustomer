@@ -1,0 +1,98 @@
+<?php
+
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var AHT\AttributeCustomer\Block\Form\AddAttributeEdit $block */
+
+$countryCode = $block->getPhoneCountryCodes();
+?>
+<script>
+    require([
+        'jquery'
+    ], function($) {
+        $(document).ready(function() {
+
+            if ($('#company_type').val() == 'Other') {
+                $('#organizatio_field').removeClass("organizatio-field");
+            } else {
+                $('#organizatio_field').addClass("organizatio-field");
+                $('#organizatio_name').val();
+            }
+
+            //check hidden or show input Organization Name
+            $('#company_type').on('change', function() {
+                if (this.value == 'Other') {
+                    $('#organizatio_field').removeClass("organizatio-field");
+                } else {
+                    $('#organizatio_field').addClass("organizatio-field");
+                    $('#organizatio_name').val();
+                }
+            });
+
+            //create array option select
+            var countryArray = [];
+            $('.country option').each(function() {
+                var img = $(this).attr("data-thumbnail");
+                var text = this.innerText;
+                var value = $(this).val();
+                var item = '<li><img src="' + img + '" alt="" value="' + value + '"/><span>' + text + '</span></li>';
+                countryArray.push(item);
+            })
+
+            $('#country_flag_nav').html(countryArray);
+
+            //Set the button value to the first el of the array
+            var check = '';
+            var contryCode = <?= !empty($countryCode) ? $countryCode : 0; ?>;
+            for (let $i = 0; $i < countryArray.length; $i++) {
+                if (countryArray[$i].indexOf(contryCode) != -1) {
+                    $('.btn-select').html(countryArray[$i]);
+                    $('.btn-select').attr('value', <?= $countryCode ?>);
+                } else {
+                    $('.btn-select').html(countryArray[231]);
+                    $('.btn-select').attr('value', '+84');
+                }
+            }
+            $('#contact_phone').val($('.btn-select').val() + ' ' + $('#phone_number').val());
+
+            //change button stuff on click
+            $('#country_flag_nav li').click(function() {
+                var img = $(this).find('img').attr("src");
+                var value = $(this).find('img').attr('value');
+                var text = this.innerText;
+                var item = '<li><img src="' + img + '" alt="" /><span>' + text + '</span></li>';
+                $('.btn-select').html(item);
+                $('.btn-select').attr('value', value);
+                $(".country_flag").toggle();
+                $('#contact_phone').val(value + ' ' + $('#phone_number').val());
+            });
+
+            $(".btn-select").click(function() {
+                $(".country_flag").toggle();
+            });
+
+            //check local storage for the lag
+            var sessionLang = localStorage.getItem('lang');
+
+            if (sessionLang) {
+                //find an item with value of sessionLang
+                var langIndex = countryArray.indexOf(sessionLang);
+                $('.btn-select').html(countryArray[langIndex]);
+                $('.btn-select').attr('value', sessionLang);
+            } else {
+                var langIndex = countryArray.indexOf('ch');
+                console.log(langIndex);
+                $('.btn-select').html(countryArray[langIndex]);
+            }
+
+            //Set the input value to the phone
+            $("#phone_number").on('keyup', function() {
+                $('#contact_phone').val($('.btn-select').val() + ' ' + $(this).val());
+            });
+        });
+
+    });
+</script>

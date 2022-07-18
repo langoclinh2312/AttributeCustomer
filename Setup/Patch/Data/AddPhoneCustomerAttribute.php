@@ -17,7 +17,6 @@ use Magento\Framework\Setup\Patch\DataPatchInterface;
 
 class AddPhoneCustomerAttribute implements DataPatchInterface
 {
-
     /**
      * @var CustomerSetupFactory
      */
@@ -49,36 +48,27 @@ class AddPhoneCustomerAttribute implements DataPatchInterface
         $this->eavConfig = $eavConfig;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function apply()
     {
         $customerSetup = $this->customerSetupFactory->create(['setup' => $this->setup]);
-        $customerEntity = $customerSetup->getEavConfig()->getEntityType(\Magento\Customer\Model\Customer::ENTITY);
+        $customerEntity = $customerSetup->getEavConfig()->getEntityType(Customer::ENTITY);
         $attributeSetId = $customerSetup->getDefaultAttributeSetId($customerEntity->getEntityTypeId());
         $attributeGroup = $customerSetup->getDefaultAttributeGroupId($customerEntity->getEntityTypeId(), $attributeSetId);
-        $customerSetup->addAttribute(
-            \Magento\Customer\Model\Customer::ENTITY,
-            'contact_phone',
-            [
-                'type' => 'varchar',
-                'label' => 'Contact Phone',
-                'input' => 'text',
-                'required' => false,
-                'default' => null,
-                'user_defined' => true,
-                'unique' => false,
-                'visible' => true,
-                'user_defined' => true,
-                'system' => false,
-                'is_visible_in_grid' => true,
-                'is_used_in_grid' => true,
-                'is_filterable_in_grid' => true,
-                'is_searchable_in_grid' => true
-            ]
-        );
-        $newAttribute = $this->eavConfig->getAttribute(\Magento\Customer\Model\Customer::ENTITY, 'contact_phone');
+        $customerSetup->addAttribute(Customer::ENTITY, 'contact_phone', [
+            'type' => 'varchar',
+            'input' => 'text',
+            'label' => 'Contact Phone',
+            'required' => false,
+            'default' => null,
+            'visible' => true,
+            'user_defined' => true,
+            'system' => false,
+            'is_visible_in_grid' => true,
+            'is_used_in_grid' => true,
+            'is_filterable_in_grid' => true,
+            'is_searchable_in_grid' => true
+        ]);
+        $newAttribute = $this->eavConfig->getAttribute(Customer::ENTITY, 'contact_phone');
         $newAttribute->addData([
             'used_in_forms' => ['adminhtml_customer', 'customer_account_edit', 'customer_account_create'],
             'attribute_set_id' => $attributeSetId,
